@@ -13,6 +13,9 @@
   <div class="mb-3">
     {{ form.file.label(class="form-label") }} {{ form.file(class="form-control") }}
   </div>
+  <div class="mb-3">
+    {{ form.category.label(class="form-label") }} {{ form.category(class="form-select") }}
+  </div>
   {{ form.submit(class="btn btn-primary") }}
 </form>
 {% endblock %}

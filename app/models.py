@@ -17,6 +17,11 @@ class Status(enum.Enum):
     confirmed     = "確認済み"
     resubmit      = "再提出"
 
+class ClientCategory(enum.Enum):
+    hoikuen         = "保育園"
+    nintei_kodomoen = "認定こども園"
+    youchien        = "幼稚園"
+
 # ─── ユーザ ───────────────────────────────────────────────────────────
 
 class User(UserMixin, db.Model):
@@ -24,6 +29,7 @@ class User(UserMixin, db.Model):
     email         = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     role          = db.Column(db.Enum(Role), default=Role.client, nullable=False)
+    category      = db.Column(db.Enum(ClientCategory))
     created_at    = db.Column(db.DateTime, default=datetime.utcnow)
 
     # パスワードヘルパ
@@ -41,6 +47,7 @@ class Template(db.Model):
     title       = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text, nullable=False)
     filename    = db.Column(db.String(200), nullable=False)  # 保存パス
+    category    = db.Column(db.Enum(ClientCategory))
     owner_id    = db.Column(db.Integer, db.ForeignKey("user.id"))
     owner       = db.relationship("User", foreign_keys=[owner_id])
     created_at  = db.Column(db.DateTime, default=datetime.utcnow)
