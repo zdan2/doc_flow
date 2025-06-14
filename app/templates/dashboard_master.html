@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Master Dashboard{% endblock %}
+{% block content %}
+<h2>Your Templates</h2>
+<a class="btn btn-primary mb-3" href="{{ url_for('main.new_template') }}">+ New Template</a>
+
+<table class="table table-hover">
+  <thead><tr><th>ID</th><th>Title</th><th>Created</th><th>Submissions</th></tr></thead>
+  <tbody>
+    {% for t in templates %}
+    <tr>
+      <td>{{ t.id }}</td>
+      <td>{{ t.title }}</td>
+      <td>{{ t.created_at.strftime('%Y-%m-%d') }}</td>
+      <td>
+        {% if t.submissions %}
+          <ul class="list-unstyled mb-0">
+            {% for s in t.submissions %}
+              <li>
+                {{ s.client.email }} – {{ s.status.value }}
+                <a href="{{ url_for('main.review_submission', id=s.id) }}">[Review]</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}0{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

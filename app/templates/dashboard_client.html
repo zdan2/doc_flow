@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Client Dashboard{% endblock %}
+{% block content %}
+<h2>Documents</h2>
+<table class="table table-hover">
+  <thead><tr><th>ID</th><th>Title</th><th>Status</th><th>Action</th></tr></thead>
+  <tbody>
+    {% for t in templates %}
+      {% set sub = submissions.get(t.id) %}
+      <tr>
+        <td>{{ t.id }}</td>
+        <td>{{ t.title }}</td>
+        <td>
+          {% if sub %}
+            <span class="badge bg-info">{{ sub.status.value }}</span>
+          {% else %}
+            <span class="badge bg-secondary">未提出</span>
+          {% endif %}
+        </td>
+        <td>
+          <a class="btn btn-sm btn-outline-primary"
+             href="{{ url_for('main.download_template', id=t.id) }}">Template</a>
+          <a class="btn btn-sm btn-outline-success"
+             href="{{ url_for('main.upload_submission', id=t.id) }}">
+             {% if sub %}Re{% endif %}Submit
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
