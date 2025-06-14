@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user
 from ..forms import LoginForm, RegisterForm
-from ..models import User, db, Role
+from ..models import User, db, Role, ClientCategory
 
 bp = Blueprint("auth", __name__)
 
@@ -25,8 +25,12 @@ def register():
         if User.query.filter_by(email=form.email.data.lower()).first():
             flash("Email already registered", "warning")
         else:
-            user = User(email=form.email.data.lower(),
-                        role=Role[form.role.data])
+            user = User(
+                email=form.email.data.lower(),
+                role=Role[form.role.data],
+            )
+            if user.role == Role.client:
+                user.category = ClientCategory[form.category.data]
             user.set_password(form.password.data)
             db.session.add(user)
             db.session.commit()

@@ -5,7 +5,7 @@ from flask import (Blueprint, render_template, redirect, url_for, flash,
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from ..forms import TemplateForm, UploadForm, ReviewForm
-from ..models import db, Template, Submission, Status, Role
+from ..models import db, Template, Submission, Status, Role, ClientCategory
 
 bp = Blueprint("main", __name__)
 
@@ -21,9 +21,10 @@ def allowed_file(filename):
 def dashboard():
     if current_user.role == Role.master:
         templates = Template.query.filter_by(owner_id=current_user.id).all()
-        return render_template("dashboard_master.html", templates=templates)
+        return render_template("dashboard_master.html", templates=templates,
+                               ClientCategory=ClientCategory)
     else:
-        templates = Template.query.all()
+        templates = Template.query.filter_by(category=current_user.category).all()
         submissions = {s.template_id: s for s in
                        Submission.query.filter_by(client_id=current_user.id).all()}
         return render_template("dashboard_client.html",
@@ -63,6 +64,7 @@ def new_template():
                 title=form.title.data,
                 description=form.description.data,
                 filename=fname,
+                category=ClientCategory[form.category.data],
                 owner_id=current_user.id
             )
             db.session.add(tmpl)
